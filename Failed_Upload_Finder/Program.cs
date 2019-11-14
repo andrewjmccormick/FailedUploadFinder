@@ -16,8 +16,9 @@ namespace Failed_Upload_Finder
             //var allFiles = Directory.GetFiles("\\\\pr-mcauly-fp01\\backups", "logfile.txt", SearchOption.AllDirectories);
             //Console.WriteLine("file: {0}", allFiles);
 
+            
             string Logfilelocation = "\\\\pr-mcauly-fp01\\backups\\B5FailedUploads.txt";
-            string LogfilelocationOut = "\\\\pr-mcauly-fp01\\backups\\B5FailedUploadsOut.txt";
+            //string LogfilelocationOut = "\\\\pr-mcauly-fp01\\backups\\B5FailedUploadsOut.txt";
 
 
             if (System.IO.File.Exists(Logfilelocation))
@@ -33,22 +34,40 @@ namespace Failed_Upload_Finder
                 {
                     if (line.Contains("FAILED"))
                     {
-                        //string[] failedlocation = line.Split(' ');
-                        string inserttxt = intnum + line + Environment.NewLine;
-                        File.AppendAllText(Logfilelocation, inserttxt);
-                        Console.WriteLine("line: {0} {1}", f, line);
+                        string[] failedlocation = line.Split(' ');
+                        string passtxt1 = failedlocation[1];
+                        DateTime MyDateTime = DateTime.ParseExact(passtxt1, "dd/MM/yyyy",null);
+                        TimeSpan HowLong = DateTime.Today - MyDateTime;
+                        string passtxt3 = failedlocation[3];
+                        string passtxt5 = failedlocation[5];
+                        string passtxt7 = failedlocation[7];
+                        string inserttxt = intnum + " " + passtxt1 + " " + passtxt3 + " " + passtxt5 + " " + passtxt7 + Environment.NewLine;
+                        if ((intnum != "INT9999") && (HowLong.Days <= 7))
+                          
+                        {
+                            File.AppendAllText(Logfilelocation, inserttxt);
+                            Console.WriteLine("line: {0} {1} {2}", f, line, HowLong);
+                        }
                     }
                     if (line.Contains("removed"))
                     {
-                        string inserttxt = intnum + line + Environment.NewLine;
-                        File.AppendAllText(Logfilelocation, inserttxt);
-                        Console.WriteLine("line: {0} {1}", f, line);
+                        string[] failedlocation = line.Split(' ');
+                        string passtxt1 = failedlocation[1];
+                        DateTime MyDateTime = DateTime.ParseExact(passtxt1, "dd/MM/yyyy", null);
+                        TimeSpan HowLong = DateTime.Today - MyDateTime;
+                        string passtxt3 = failedlocation[3];
+                        string passtxt5 = failedlocation[5];
+                        if ((intnum != "INT9999") && (HowLong.Days <= 7))
+                        {
+                            string inserttxt = intnum + " " + passtxt1 + " " + passtxt3 + " " + passtxt5 + Environment.NewLine; File.AppendAllText(Logfilelocation, inserttxt);
+                            Console.WriteLine("line: {0} {1} {2}", f, line, HowLong);
+                        }
                     }
                 }
             }
 
- //           string[] lines = File.ReadAllLines(Logfilelocation);
- //           File.WriteAllLines(LogfilelocationOut, lines.Distinct().ToArray());
+            string[] lines = File.ReadAllLines(Logfilelocation);
+            File.WriteAllLines(Logfilelocation, lines.Distinct().ToArray());
         }
 
         //static void CopyLinesRemovingAllDupes(TextReader reader, TextWriter writer)
